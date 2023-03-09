@@ -57,7 +57,8 @@ ggplot(analysis_df, aes(x = rec_to_acc, y=journal2)) +
     alpha = 0.7, scale = 0.9) +
   xlab("Received to acceptance in days") +
   ylab("")
-  
+
+ggsave("summary.png")
 
 
 
