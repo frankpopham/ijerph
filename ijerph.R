@@ -6,6 +6,7 @@ library(rentrez)
 
 #dir.create("data")
 
+#Recorded number of papers per 2022 issue from website (split need to avoid limits on entrez search)
 
 papers <- c(615, 406, 889, 580, 656, 600, 674, 508, 854, 570, 602, 597, 672, 662, 890, 687,
          684, 695, 1144, 731, 904, 803, 952, 728)
@@ -105,25 +106,33 @@ files <- dir(pattern = "*.RDS")
 walk(files, ~read_rds(.x) %>%
   mutate(special=map(elocationid2, ~read_html(glue("https://doi.org/{.x}")) %>%
                                                 html_elements(".belongsTo") %>%
-                                                html_text2(), .progress=TRUE)) %>%
-  saveRDS(., glue("{.x}")))
+                                                html_text2()))  %>%
+  mutate(special_href=map(elocationid2, ~read_html(glue("https://doi.org/{.x}")) %>%
+                              html_elements(".belongsTo") %>%
+                              html_element("a") %>% 
+                              html_attr('href'))) %>% 
+  saveRDS(., glue("{.x}")), .progress = TRUE)
 
-#make a df
 
- ijerph_2022_special <- files %>%
-   map(~read_rds(.x)) %>%
-   reduce(bind_rows) %>%
-   mutate(special=as.character(special))
+#get author sci profiles
+
+walk(files, ~read_rds(.x) %>%
+       mutate(special_sciprofile=map(elocationid2, ~read_html(glue("https://doi.org/{.x}")) %>%
+                            html_elements(".hypothesis_container") %>%
+                            html_elements(".sciprofiles-link__link") %>%
+                            html_attr('href'))) %>%
+       saveRDS(., glue("{.x}")), .progress = TRUE)
+
+
+ #make a df
+
+ijerph_2022_special <- files %>%
+  map(~read_rds(.x)) %>%
+  reduce(bind_rows) %>%
+  mutate(special=as.character(special)) %>%
+  mutate(special_href=trim(as.character(special_href))) %>%
+  mutate(special_href=ifelse(special!="character(0)", glue({"https://www.mdpi.com{special_href}"}), NA)) 
 
 saveRDS(ijerph_2022_special, file="data/ijerph_2022_special.RDS")
- 
-
-
- 
-
-
-
-
-
 
 
