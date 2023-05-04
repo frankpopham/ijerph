@@ -217,15 +217,6 @@ pmid <- files %>%
    select(-paper_authors, -editors)
  
  
- ijerph_special_03_02_papers2 <- ijerph_special_03_02_all %>%
-   mutate(noeds= map(eds, ~nrow(.))) %>%
-   mutate(noeds=as.numeric(noeds)) %>%
-   group_by(paper_href) %>%
-   summarise(noedsasauth=sum(editors),
-             noeds=mean(noeds))
-
- ijerph_special_03_02_papers <- ijerph_special_03_02_papers %>%
-   left_join(ijerph_special_03_02_papers2)
 
    
  ijerph_special_03_02_papers <- ijerph_special_03_02_papers %>%
@@ -235,23 +226,22 @@ pmid <- files %>%
 
 saveRDS(ijerph_special_03_02_papers, file="data/ijerph_special_03_02_papers.RDS")
 
+adddoi <- files %>%
+  map(~read_rds(.x)) %>%
+  reduce(bind_rows) %>%
+        mutate(paper_doi=str_sub(paper_doi, start=17))
+
+ijerph_special_03_02_df <- ijerph_special_03_02_all %>%
+  left_join(select(adddoi, paper_href, paper_doi), by="paper_href")
+
+ 
+saveRDS(ijerph_special_03_02_df, file="data/ijerph_special_03_02_df.RDS")
+
+     
 file.remove(files)
    
-paper_results <- ijerph_special_03_02_all %>%
-  group_by(paper_titles) %>%
-  summarise(seds=sum(editors)) %>%
-  group_by(seds) %>%
-  summarise(n=n()) %>%
-  mutate(N=sum(n)) %>%
-  mutate(pc=(n/N)*100)
-  
-special_results <- ijerph_special_03_02_all %>%
-  group_by(special_page) %>%
-  summarise(seds=sum(editors)) %>%
-  group_by(seds) %>%
-  summarise(n=n()) %>%
-  mutate(N=sum(n)) %>%
-  mutate(pc=(n/N)*100)
+
+
 
 
 
