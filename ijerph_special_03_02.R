@@ -5,27 +5,30 @@ library(rentrez)
 library(RefManageR)
 library(rcrossref)
 
-#run 5th April closed in 2022 and up to March 2023
 
 
-# ijerph_special_03_02 <- map(14:27,
-# ~read_html(
-# glue("https://www.mdpi.com/journal/ijerph/special_issues?page_count=100&search=&section_id=&sort=deadline&view=closed&page_no={.x}")) %>%
-#                        html_elements(".title-link") %>%
-#                        html_attr("href"), .progress = T)
-# 
-# 
-# 
-# ijerph_special_03_02_eds3 <- map(14:27,
-#                                  ~read_html(
-#                                    glue("https://www.mdpi.com/journal/ijerph/special_issues?page_count=100&search=&section_id=&sort=deadline&view=closed&page_no={.x}")) %>%
-#                                    html_elements("strong") %>%
-#                                    html_text2(), .progress = T)
-# 
-# saveRDS(ijerph_special_03_02, file = "data/ijerph_special_03_02.RDS")
-# saveRDS(ijerph_special_03_02_eds3, file = "data/ijerph_special_03_02_eds3.RDS")
+#run 5th April -  closed in 2022 and up to March 2023
+
+#extract from search the web link of papers 
+
+ijerph_special_03_02 <- map(14:27,
+ ~read_html(
+glue("https://www.mdpi.com/journal/ijerph/special_issues?page_count=100&search=&section_id=&sort=deadline&view=closed&page_no={.x}")) %>%
+                        html_elements(".title-link") %>%
+                        html_attr("href"), .progress = T)
+ 
+ 
+ ijerph_special_03_02_eds3 <- map(14:27,
+                                  ~read_html(
+                                    glue("https://www.mdpi.com/journal/ijerph/special_issues?page_count=100&search=&section_id=&sort=deadline&view=closed&page_no={.x}")) %>%
+                                    html_elements("strong") %>%
+                                    html_text2(), .progress = T)
+ 
+saveRDS(ijerph_special_03_02, file = "data/ijerph_special_03_02.RDS")
+saveRDS(ijerph_special_03_02_eds3, file = "data/ijerph_special_03_02_eds3.RDS")
 
 ##############################################################
+# Add the special issue title
 
 ijerph_special_03_02 <- read_rds("data/ijerph_special_03_02.RDS")
 
@@ -41,6 +44,8 @@ ijerph_special_03_02 <- ijerph_special_03_02 %>%
 
 ijerph_special_03_02_eds3 <- read_rds("data/ijerph_special_03_02_eds3.RDS")
 
+#limit to close date
+
 ijerph_special_03_02_eds3 <- ijerph_special_03_02_eds3 %>%
   map(~tibble(closed_date=.) %>%
         mutate(closed_date=dmy(closed_date)) %>%
@@ -53,6 +58,7 @@ ijerph_special_03_02 <- ijerph_special_03_02 %>%
   filter(closed_date!="2023-04-01") %>%
   mutate(special_page=glue("https://www.mdpi.com{special_page}"))
 
+#get editors
 
 ijerph_special_03_02 <- ijerph_special_03_02 %>%
 mutate(special_editors=map(special_page, ~read_html(.x) %>%
