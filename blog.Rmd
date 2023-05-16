@@ -1,5 +1,5 @@
 ---
-title: "Is editing an  IJERPH special issue a way to self publish?"
+title: "Is editing a special issue a way to self publish?  MDPI's IJERPH"
 author: "Frank Popham"
 date: "2023-05-02"
 output:
@@ -153,7 +153,7 @@ fig1
 
 ### Summary
 
-The majority of special issues feature editor authored papers. If anything the review process is speedier for such papers. What does this mean? I don't know really. Personally I am surprised at the level of self publishing and its speed (I would have thought that having to involve an usual editor would delay the process). My analysis may contain mistakes so you can view the code and the code used to construct the data set as well as the datasets (1 and 2).
+The majority of special issues feature editor authored papers. If anything the review process is speedier for such papers. What does this mean? I don't know really. Personally I am surprised at the level of self publishing and its speed (I would have thought that having to involve an usual editor would delay the process). My analysis may contain mistakes so you can view the [analysis code](https://github.com/frankpopham/ijerph/blob/master/blog.Rmd) and the [code](https://github.com/frankpopham/ijerph/blob/master/ijerph_special_03_02.R) used to construct the datasets as well as the datasets ([1](https://github.com/frankpopham/ijerph/blob/master/data/ijerph_special_03_02_df.RDS?raw=true) and [2](https://github.com/frankpopham/ijerph/blob/master/data/ijerph_special_03_02_papers.RDS?raw=true)).
 
 ### Thanks
 
